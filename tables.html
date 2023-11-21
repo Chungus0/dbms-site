@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+     <meta charset="UTF-8">
+    <title>User Management Interface</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        .navbar {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #4CAF50;
+        }
+
+        .navbar li {
+            float: left;
+        }
+
+        .navbar li a {
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+        .navbar li a:hover {
+            background-color: #45a049;
+        }
+
+        .container {
+            width: 80%;
+            margin: 20px auto;
+            overflow: hidden;
+        }
+
+        h1, h2 {
+            color: #333;
+        }
+
+        form {
+            background: #fff;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>	
+    <title>Data Overview</title>
+    <script>
+        function sendRequest(url, method, callback) {
+            fetch(url, {
+                method: method,
+                headers: {'Content-Type': 'application/json'}
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => callback(data))
+            .catch(error => {
+                document.getElementById('response').textContent = error.toString();
+            });
+        }
+
+        function displayTable(data, tableId) {
+            const table = document.getElementById(tableId);
+            table.innerHTML = ''; // Clear existing data
+
+            // Create header row
+            const headerRow = document.createElement('tr');
+            if (data.length > 0) {
+                Object.keys(data[0]).forEach(key => {
+                    const header = document.createElement('th');
+                    header.textContent = key;
+                    headerRow.appendChild(header);
+                });
+                table.appendChild(headerRow);
+            }
+
+            // Create data rows
+            data.forEach(item => {
+                const row = document.createElement('tr');
+                Object.values(item).forEach(value => {
+                    const cell = document.createElement('td');
+                    cell.textContent = value;
+                    row.appendChild(cell);
+                });
+                table.appendChild(row);
+            });
+        }
+
+        function fetchAndDisplay(entity, url) {
+            sendRequest(url, 'GET', data => displayTable(data, entity + 'Table'));
+        }
+    </script>
+</head>
+<body>
+	
+	<ul class="navbar">
+        <li><a href="member.html">Members</a></li>
+        <li><a href="users.html">Users</a></li>
+        <li><a href="caregivers.html">Caregivers</a></li>
+        <li><a href="jobs.html">Jobs</a></li>
+        <li><a href="addresses.html">Addresses</a></li>
+        <li><a href="appointments.html">Appointments</a></li>
+        <li><a href="Job_application.html">Job Applications</a></li>
+        <li><a href="tables.html">Tables</a></li>
+    </ul>
+	
+	 <div class="container">
+        <h1>Data Overview</h1>
+
+    <div>
+        <h2>Users</h2>
+        <button onclick="fetchAndDisplay('users', 'http://34.88.207.112:3002/users')">Get Users</button>
+        <table id="usersTable"></table>
+    </div>
+
+    <div>
+        <h2>Members</h2>
+        <button onclick="fetchAndDisplay('members', 'http://34.88.207.112:3002/members')">Get Members</button>
+        <table id="membersTable"></table>
+    </div>
+
+    <div>
+        <h2>Jobs</h2>
+        <button onclick="fetchAndDisplay('jobs', 'http://34.88.207.112:3002/jobs')">Get Jobs</button>
+        <table id="jobsTable"></table>
+    </div>
+
+    <div>
+        <h2>Appointments</h2>
+        <button onclick="fetchAndDisplay('appointments', 'http://34.88.207.112:3002/appointments')">Get Appointments</button>
+        <table id="appointmentsTable"></table>
+    </div>
+
+    <div>
+        <h2>Addresses</h2>
+        <button onclick="fetchAndDisplay('addresses', 'http://34.88.207.112:3002/addresses')">Get Addresses</button>
+        <table id="addressesTable"></table>
+    </div>
+
+    <div>
+        <h2>Caregivers</h2>
+        <button onclick="fetchAndDisplay('caregivers', 'http://34.88.207.112:3002/caregivers')">Get Caregivers</button>
+        <table id="caregiversTable"></table>
+    </div>
+
+    <div>
+        <h2>Job Applications</h2>
+        <button onclick="fetchAndDisplay('jobApplications', 'http://34.88.207.112:3002/job_applications')">Get Job Applications</button>
+        <table id="jobApplicationsTable"></table>
+    </div>
+
+
+    <pre id="response"></pre>
+    </div>
+	
+    
+</body>
+</html>

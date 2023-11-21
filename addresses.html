@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Management Interface</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        .navbar {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #4CAF50;
+        }
+
+        .navbar li {
+            float: left;
+        }
+
+        .navbar li a {
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+        .navbar li a:hover {
+            background-color: #45a049;
+        }
+
+        .container {
+            width: 80%;
+            margin: 20px auto;
+            overflow: hidden;
+        }
+
+        h1, h2 {
+            color: #333;
+        }
+
+        form {
+            background: #fff;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>	
+    <title>User Management Interface</title>
+    <script>
+        function sendRequest(url, method, data) {
+            const fetchOptions = {
+                method: method,
+                headers: {'Content-Type': 'application/json'}
+            };
+            if (method !== 'GET' && method !== 'HEAD') {
+                fetchOptions.body = JSON.stringify(data);
+            }
+
+            fetch(url, fetchOptions)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                displayResponse(JSON.stringify(data, null, 2));
+            })
+            .catch((error) => {
+                displayResponse(error.toString());
+            });
+        }
+
+        function handleFormSubmit(event, url, method) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const data = {};
+            formData.forEach((value, key) => data[key] = value);
+            sendRequest(url, method, data);
+        }
+
+        function displayResponse(message) {
+            document.getElementById('response').textContent = message;
+        }
+    </script>
+</head>
+<body>
+
+	<ul class="navbar">
+        <li><a href="member.html">Members</a></li>
+        <li><a href="users.html">Users</a></li>
+        <li><a href="caregivers.html">Caregivers</a></li>
+        <li><a href="jobs.html">Jobs</a></li>
+        <li><a href="addresses.html">Addresses</a></li>
+        <li><a href="appointments.html">Appointments</a></li>
+        <li><a href="Job_application.html">Job Applications</a></li>
+        <li><a href="tables.html">Tables</a></li>
+    </ul>
+<div class="container">
+        <h1>Address Management Interface</h1>
+        <h2>Create Address</h2>
+	
+	
+	
+    <form onsubmit="handleFormSubmit(event, 'http://34.88.207.112:3002/address', 'POST')">
+        <input type="text" name="member_user_id" placeholder="Member User ID" required>
+        <input type="text" name="house_number" placeholder="House Number" required>
+        <input type="text" name="street" placeholder="Street" required>
+        <input type="text" name="town" placeholder="Town" required>
+        <button type="submit">Create Address</button>
+    </form>
+
+    <!-- Form to Get All Addresses -->
+    <h2>Get All Addresses</h2>
+    <button onclick="sendRequest('http://34.88.207.112:3002/addresses', 'GET', {})">Get All Addresses</button>
+
+    <!-- Form to Get a Single Address -->
+    <h2>Get Address</h2>
+    <form onsubmit="handleFormSubmit(event, 'http://34.88.207.112:3002/address/' + document.getElementById('get_address_id').value, 'GET')">
+        <input type="text" id="get_address_id" name="member_user_id" placeholder="Member User ID" required>
+        <button type="submit">Get Address</button>
+    </form>
+
+    <!-- Form to Update an Address -->
+    <h2>Update Address</h2>
+    <form onsubmit="handleFormSubmit(event, 'http://34.88.207.112:3002/address/' + document.getElementById('update_address_id').value, 'PUT')">
+        <input type="text" id="update_address_id" name="member_user_id" placeholder="Member User ID" required>
+        <input type="text" name="house_number" placeholder="New House Number">
+        <input type="text" name="street" placeholder="New Street">
+        <input type="text" name="town" placeholder="New Town">
+        <button type="submit">Update Address</button>
+    </form>
+
+    <!-- Form to Delete an Address -->
+    <h2>Delete Address</h2>
+    <form onsubmit="handleFormSubmit(event, 'http://34.88.207.112:3002/address/' + document.getElementById('delete_address_id').value, 'DELETE')">
+        <input type="text" id="delete_address_id" name="member_user_id" placeholder="Member User ID" required>
+        <button type="submit">Delete Address</button>
+    </form>
+
+    <pre id="response"></pre>
+    </div>
+
+</body>
+</html>

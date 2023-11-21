@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Management Interface</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        .navbar {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #4CAF50;
+        }
+
+        .navbar li {
+            float: left;
+        }
+
+        .navbar li a {
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+        .navbar li a:hover {
+            background-color: #45a049;
+        }
+
+        .container {
+            width: 80%;
+            margin: 20px auto;
+            overflow: hidden;
+        }
+
+        h1, h2 {
+            color: #333;
+        }
+
+        form {
+            background: #fff;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>	
+    <title>User Management Interface</title>
+    <script>
+        function sendRequest(url, method, data) {
+            const fetchOptions = {
+                method: method,
+                headers: {'Content-Type': 'application/json'}
+            };
+            if (method !== 'GET' && method !== 'HEAD') {
+                fetchOptions.body = JSON.stringify(data);
+            }
+
+            fetch(url, fetchOptions)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                displayResponse(JSON.stringify(data, null, 2));
+            })
+            .catch((error) => {
+                displayResponse(error.toString());
+            });
+        }
+
+        function handleFormSubmit(event, url, method) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const data = {};
+            formData.forEach((value, key) => data[key] = value);
+            sendRequest(url, method, data);
+        }
+
+        function displayResponse(message) {
+            document.getElementById('response').textContent = message;
+        }
+    </script>
+</head>
+<body>
+	<ul class="navbar">
+        <li><a href="member.html">Members</a></li>
+        <li><a href="users.html">Users</a></li>
+        <li><a href="caregivers.html">Caregivers</a></li>
+        <li><a href="jobs.html">Jobs</a></li>
+        <li><a href="addresses.html">Addresses</a></li>
+        <li><a href="appointments.html">Appointments</a></li>
+        <li><a href="Job_application.html">Job Applications</a></li>
+        <li><a href="tables.html">Tables</a></li>
+    </ul>
+	<div class="container">
+        <h1>Appointment Management Interface</h1>
+
+    <!-- Form to Create an Appointment -->
+    <h2>Create Appointment</h2>
+	
+	
+	
+    <form onsubmit="handleFormSubmit(event, 'http://34.88.207.112:3002/appointment', 'POST')">
+        <input type="text" name="appointment_id" placeholder="Appointment ID" required>
+        <input type="text" name="caregiver_user_id" placeholder="Caregiver User ID" required>
+        <input type="text" name="member_user_id" placeholder="Member User ID" required>
+        <input type="date" name="appointment_date" placeholder="Date" required>
+        <input type="time" name="appointment_time" placeholder="Time" required>
+        <input type="number" name="work_hours" placeholder="Work Hours" required>
+        <input type="text" name="status" placeholder="Status" required>
+        <button type="submit">Create Appointment</button>
+    </form>
+
+    <!-- Form to Get All Appointments -->
+    <h2>Get All Appointments</h2>
+    <button onclick="sendRequest('http://34.88.207.112:3002/appointments', 'GET', {})">Get All Appointments</button>
+
+    <!-- Form to Get a Single Appointment -->
+    <h2>Get Appointment</h2>
+    <form onsubmit="handleFormSubmit(event, 'http://34.88.207.112:3002/appointment/' + document.getElementById('get_appointment_id').value, 'GET')">
+        <input type="text" id="get_appointment_id" name="appointment_id" placeholder="Appointment ID" required>
+        <button type="submit">Get Appointment</button>
+    </form>
+
+    <!-- Form to Update an Appointment -->
+    <h2>Update Appointment</h2>
+    <form onsubmit="handleFormSubmit(event, 'http://34.88.207.112:3002/appointment/' + document.getElementById('update_appointment_id').value, 'PUT')">
+    <input type="text" id="update_appointment_id" name="appointment_id" placeholder="Appointment ID" required>
+
+    <!-- Additional fields for updating appointment details -->
+    <input type="date" name="appointment_date" placeholder="Date">
+    <input type="time" name="appointment_time" placeholder="Time">
+    <input type="number" name="work_hours" placeholder="Work Hours">
+    <input type="text" name="status" placeholder="Status">
+
+    <button type="submit">Update Appointment</button>
+</form>
+
+    <!-- Form to Delete an Appointment -->
+    <h2>Delete Appointment</h2>
+    <form onsubmit="handleFormSubmit(event, 'http://34.88.207.112:3002/appointment/' + document.getElementById('delete_appointment_id').value, 'DELETE')">
+        <input type="text" id="delete_appointment_id" name="appointment_id" placeholder="Appointment ID" required>
+        <button type="submit">Delete Appointment</button>
+    </form>
+
+    <pre id="response"></pre>
+    </div>
+    
+
+    <!-- ... JavaScript functions ... -->
+
+</body>
+</html>

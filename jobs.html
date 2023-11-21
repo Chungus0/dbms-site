@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Management Interface</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        .navbar {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #4CAF50;
+        }
+
+        .navbar li {
+            float: left;
+        }
+
+        .navbar li a {
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+        .navbar li a:hover {
+            background-color: #45a049;
+        }
+
+        .container {
+            width: 80%;
+            margin: 20px auto;
+            overflow: hidden;
+        }
+
+        h1, h2 {
+            color: #333;
+        }
+
+        form {
+            background: #fff;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>	
+    <title>User Management Interface</title>
+    <script>
+        function sendRequest(url, method, data) {
+            const fetchOptions = {
+                method: method,
+                headers: {'Content-Type': 'application/json'}
+            };
+            if (method !== 'GET' && method !== 'HEAD') {
+                fetchOptions.body = JSON.stringify(data);
+            }
+
+            fetch(url, fetchOptions)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                displayResponse(JSON.stringify(data, null, 2));
+            })
+            .catch((error) => {
+                displayResponse(error.toString());
+            });
+        }
+
+        function handleFormSubmit(event, url, method) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const data = {};
+            formData.forEach((value, key) => data[key] = value);
+            sendRequest(url, method, data);
+        }
+
+        function displayResponse(message) {
+            document.getElementById('response').textContent = message;
+        }
+    </script>
+</head>
+<body>
+
+	<ul class="navbar">
+        <li><a href="member.html">Members</a></li>
+        <li><a href="users.html">Users</a></li>
+        <li><a href="caregivers.html">Caregivers</a></li>
+        <li><a href="jobs.html">Jobs</a></li>
+        <li><a href="addresses.html">Addresses</a></li>
+        <li><a href="appointments.html">Appointments</a></li>
+        <li><a href="Job_application.html">Job Applications</a></li>
+        <li><a href="tables.html">Tables</a></li>
+    </ul>
+	
+	 <div class="container">
+        <h1>Job Management Interface</h1>
+
+    <!-- Form to Create a Job -->
+    <h2>Create Job</h2>
+    <form onsubmit="handleFormSubmit(event, 'http://34.88.207.112:3002/job', 'POST')">
+        <input type="text" name="job_id" placeholder="Job ID" required>
+        <input type="text" name="member_user_id" placeholder="Member User ID" required>
+        <input type="text" name="required_caregiving_type" placeholder="Required Caregiving Type" required>
+        <textarea name="other_requirements" placeholder="Other Requirements"></textarea>
+        <input type="date" name="date_posted" placeholder="Date Posted" required>
+        <button type="submit">Create Job</button>
+    </form>
+
+    <!-- Form to Get All Jobs -->
+    <h2>Get All Jobs</h2>
+    <button onclick="sendRequest('http://34.88.207.112:3002/jobs', 'GET', {})">Get All Jobs</button>
+
+    <!-- Form to Get a Single Job -->
+    <h2>Get Job</h2>
+    <form onsubmit="handleFormSubmit(event, 'http://34.88.207.112:3002/job/' + document.getElementById('get_job_id').value, 'GET')">
+        <input type="text" id="get_job_id" name="job_id" placeholder="Job ID" required>
+        <button type="submit">Get Job</button>
+    </form>
+
+    <!-- Form to Update a Job -->
+    <h2>Update Job</h2>
+    <form onsubmit="handleFormSubmit(event, 'http://34.88.207.112:3002/job/' + document.getElementById('update_job_id').value, 'PUT')">
+        <input type="text" id="update_job_id" name="job_id" placeholder="Job ID" required>
+        <!-- Additional fields for updating job details -->
+        <input type="text" name="required_caregiving_type" placeholder="New Required Caregiving Type">
+        <textarea name="other_requirements" placeholder="New Other Requirements"></textarea>
+        <input type="date" name="date_posted" placeholder="New Date Posted">
+        <button type="submit">Update Job</button>
+    </form>
+
+    <!-- Form to Delete a Job -->
+    <h2>Delete Job</h2>
+    <form onsubmit="handleFormSubmit(event, 'http://34.88.207.112:3002/job/' + document.getElementById('delete_job_id').value, 'DELETE')">
+        <input type="text" id="delete_job_id" name="job_id" placeholder="Job ID" required>
+        <button type="submit">Delete Job</button>
+    </form>
+
+    <pre id="response"></pre>
+    </div>
+
+</body>
+
+</html>

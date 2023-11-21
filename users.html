@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Management Interface</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        .navbar {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #4CAF50;
+        }
+
+        .navbar li {
+            float: left;
+        }
+
+        .navbar li a {
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+        .navbar li a:hover {
+            background-color: #45a049;
+        }
+
+        .container {
+            width: 80%;
+            margin: 20px auto;
+            overflow: hidden;
+        }
+
+        h1, h2 {
+            color: #333;
+        }
+
+        form {
+            background: #fff;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>	
+    <title>User Management Interface</title>
+    <script>
+        function sendRequest(url, method, data) {
+            const fetchOptions = {
+                method: method,
+                headers: {'Content-Type': 'application/json'}
+            };
+            if (method !== 'GET' && method !== 'HEAD') {
+                fetchOptions.body = JSON.stringify(data);
+            }
+
+            fetch(url, fetchOptions)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                displayResponse(JSON.stringify(data, null, 2));
+            })
+            .catch((error) => {
+                displayResponse(error.toString());
+            });
+        }
+
+        function handleFormSubmit(event, url, method) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const data = {};
+            formData.forEach((value, key) => data[key] = value);
+            sendRequest(url, method, data);
+        }
+
+        function displayResponse(message) {
+            document.getElementById('response').textContent = message;
+        }
+    </script>
+</head>
+<body>
+
+	<ul class="navbar">
+        <li><a href="member.html">Members</a></li>
+        <li><a href="users.html">Users</a></li>
+        <li><a href="caregivers.html">Caregivers</a></li>
+        <li><a href="jobs.html">Jobs</a></li>
+        <li><a href="addresses.html">Addresses</a></li>
+        <li><a href="appointments.html">Appointments</a></li>
+        <li><a href="Job_application.html">Job Applications</a></li>
+        <li><a href="tables.html">Tables</a></li>
+    </ul>
+
+	 <div class="container">
+        <h1>User Management Interface</h1>
+
+    <h2>Create User</h2>
+	
+	
+	
+    <form onsubmit="handleFormSubmit(event, 'http://34.88.207.112:3002/user', 'POST')">
+        <input type="text" name="email" placeholder="Email" required>
+        <input type="text" name="given_name" placeholder="Given Name" required>
+        <input type="text" name="surname" placeholder="Surname" required>
+        <input type="text" name="city" placeholder="City" required>
+        <input type="text" name="phone_number" placeholder="Phone Number" required>
+        <textarea name="profile_description" placeholder="Profile Description"></textarea>
+        <input type="password" name="password" placeholder="Password" required>
+        <button type="submit">Create User</button>
+    </form>
+
+    <!-- Form to Get All Users -->
+    <h2>Get All Users</h2>
+    <button onclick="sendRequest('http://34.88.207.112:3002/users', 'GET', {})">Get Users</button>
+
+    <!-- Form to Get a Single User -->
+    <h2>Get User</h2>
+    <form onsubmit="handleFormSubmit(event, 'http://34.88.207.112:3002/user/' + document.getElementById('get_user_id').value, 'GET')">
+        <input type="text" id="get_user_id" name="user_id" placeholder="User ID" required>
+        <button type="submit">Get User</button>
+    </form>
+
+    <!-- Form to Update a User -->
+    <h2>Update User</h2>
+    <form onsubmit="handleFormSubmit(event, 'http://34.88.207.112:3002/user/' + document.getElementById('update_user_id').value, 'PUT')">
+        <input type="text" id="update_user_id" name="user_id" placeholder="User ID" required>
+        <input type="text" name="email" placeholder="New Email">
+        <input type="text" name="given_name" placeholder="New Given Name">
+        <input type="text" name="surname" placeholder="New Surname">
+        <input type="text" name="city" placeholder="New City">
+        <input type="text" name="phone_number" placeholder="New Phone Number">
+        <textarea name="profile_description" placeholder="New Profile Description"></textarea>
+        <input type="password" name="password" placeholder="New Password">
+        <button type="submit">Update User</button>
+    </form>
+
+    <!-- Form to Delete a User -->
+    <h2>Delete User</h2>
+    <form onsubmit="handleFormSubmit(event, 'http://34.88.207.112:3002/user/' + document.getElementById('delete_user_id').value, 'DELETE')">
+        <input type="text" id="delete_user_id" name="user_id" placeholder="User ID" required>
+        <button type="submit">Delete User</button>
+    </form>
+
+    <pre id="response"></pre>
+    </div>
+
+    
+
+
+</body>
+</html>
